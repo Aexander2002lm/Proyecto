@@ -1,0 +1,1315 @@
+[Ahorcado.html](https://github.com/user-attachments/files/23682709/Ahorcado.html)
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ahorcado Cultural Ecuatoriano</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap">
+    <style id="app-style">
+        body {
+            font-family: 'Lora', serif;
+            background: linear-gradient(180deg, #ffd700 0%, #ffd700 33%, #0052a5 33%, #0052a5 66%, #d32f2f 66%, #d32f2f 100%);
+            background-attachment: fixed;
+            color: #33322e;
+        }
+
+        .app-container {
+            max-width: 980px;
+            min-height: 620px;
+            background: linear-gradient(135deg, #fffef7 0%, #f9f6e8 100%);
+            border: 8px solid transparent;
+            border-image: linear-gradient(135deg, #ffd700, #0052a5, #d32f2f) 1;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .logo-unemi {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 12px;
+            padding: 6px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            border: 3px solid #ffd700;
+        }
+
+        .footer-credits {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #ffd700, #0052a5, #d32f2f);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: #fff;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid #ffd700;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #b71c1c, #8b0000);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #0052a5, #003d7a);
+            color: #fff;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid #ffd700;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #003d7a, #002855);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 82, 165, 0.4);
+        }
+
+        .option-btn {
+            background-color: #fff9e6;
+            border: 3px solid #ffd700;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s;
+            border-radius: 0.75rem;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #fff3cc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+            border-color: #0052a5;
+        }
+
+        .option-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            animation: correctPulse 0.5s;
+            border-color: #ffd700;
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            animation: incorrectShake 0.5s;
+            border-color: #0052a5;
+        }
+
+        .timer-bar {
+            height: 10px;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            transition: width 1s linear, background 0.3s;
+            border-radius: 5px;
+        }
+
+        .hangman-container {
+            width: 220px;
+            height: 260px;
+            position: relative;
+        }
+
+        .hangman-part {
+            position: absolute;
+            stroke: #0052a5;
+            stroke-width: 4;
+            fill: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .scoreboard {
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 3px solid #ffd700;
+            border-radius: 8px;
+        }
+
+        .intro-box,
+        .objective-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 3px solid #ffd700;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 82, 165, 0.2);
+        }
+
+        #intro-screen p,
+        #question-text {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid #ffd700;
+        }
+
+        .correct-question {
+            animation: pulse 0.4s;
+        }
+
+        .wrong-question {
+            animation: shake 0.4s;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #ffd700;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 10px rgba(0, 82, 165, 0.2);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 2px solid #ffd700;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.85rem;
+            border: 4px solid #ffd700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: white;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 82, 165, 0.4);
+            border-color: #0052a5;
+        }
+
+        .category-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 82, 165, 0.85), rgba(0, 82, 165, 0.1));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1rem;
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+            color: #ffd700;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 999px;
+            background: #ffd700;
+            color: #0052a5;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 2px solid white;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
+        }
+
+        @keyframes correctPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes incorrectShake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-3px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(3px);
+            }
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 1.8rem !important;
+            }
+
+            .app-container {
+                border-width: 4px;
+                padding: 1rem !important;
+            }
+
+            .logo-unemi {
+                width: 55px;
+                height: 55px;
+                bottom: 10px;
+                left: 10px;
+            }
+
+            .hangman-container {
+                width: 170px;
+                height: 210px;
+            }
+
+            .option-btn {
+                font-size: 0.9rem;
+                padding: 0.6rem 0.75rem;
+            }
+
+            .footer-credits {
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-yellow-50">
+    <div class="min-h-screen flex flex-col items-center justify-center p-4 pb-20">
+        <div class="app-container p-6 md:p-8 w-full">
+            <!-- Logo UNEMI -->
+            <div class="logo-unemi">
+                <img src="https://www.unemi.edu.ec/wp-content/uploads/2021/09/LOGO-WEB-AZUL.png" alt="Logo UNEMI"
+                    class="w-full h-full object-contain">
+            </div>
+
+            <!-- Bandera ecuatoriana decorativa -->
+            <div class="h-3 w-full mb-4 rounded-full overflow-hidden" style="box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                <div class="h-full w-full bg-gradient-to-r from-yellow-400 via-blue-600 to-red-600"></div>
+            </div>
+
+            <!-- Intro Screen -->
+            <div id="intro-screen" class="flex flex-col items-center justify-center h-full py-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-center mb-6 tracking-wide text-red-700 drop-shadow-lg"
+                    style="text-shadow: 2px 2px 4px rgba(0,82,165,0.3);">Ahorcado Cultural Ecuatoriano</h1>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Flag_of_Ecuador.svg/320px-Flag_of_Ecuador.svg.png"
+                    alt="Bandera Ecuador" class="w-48 mb-6 rounded-lg shadow-lg" style="border: 3px solid #ffd700;">
+
+                <div class="objective-box max-w-2xl">
+                    <h2 class="text-2xl font-bold text-center mb-3" style="color: #0052a5;">
+                        <i class="fas fa-bullseye mr-2 text-red-700"></i>Objetivo del Juego
+                    </h2>
+                    <p class="text-lg text-center mb-4">
+                        Evaluar y fortalecer tus conocimientos sobre la <strong style="color: #d32f2f;">cultura
+                            ecuatoriana</strong> mediante un juego interactivo del ahorcado.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                            <span>Responde 10 preguntas sobre Ecuador</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-clock mt-1" style="color: #0052a5;"></i>
+                            <span>Tienes 30 segundos por pregunta</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-star mt-1" style="color: #ffd700;"></i>
+                            <span>Gana 10 puntos por respuesta correcta</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-exclamation-triangle text-red-600 mt-1"></i>
+                            <span>Máximo 6 errores permitidos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="intro-box max-w-2xl">
+                    <h3 class="text-xl font-bold text-center mb-3" style="color: #0052a5;">
+                        <i class="fas fa-info-circle mr-2" style="color: #ffd700;"></i>¿Cómo jugar?
+                    </h3>
+                    <ol class="list-decimal list-inside space-y-2 text-base">
+                        <li>Lee cuidadosamente cada pregunta sobre la cultura ecuatoriana.</li>
+                        <li>Selecciona la respuesta correcta entre las 4 opciones.</li>
+                        <li>Por cada error, se dibujará una parte del personaje con poncho y sombrero.</li>
+                        <li>Si completas el ahorcado (6 errores), pierdes el juego.</li>
+                        <li>¡Intenta obtener la mayor puntuación posible!</li>
+                    </ol>
+                </div>
+
+                <button id="go-to-categories-button"
+                    class="btn-primary px-10 py-4 text-xl rounded-lg inline-flex items-center gap-3 shadow-lg">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    Elegir Categoría
+                </button>
+            </div>
+
+            <!-- Category Screen -->
+            <div id="category-screen" class="hidden h-full py-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4"
+                    style="color: #d32f2f; text-shadow: 2px 2px 4px rgba(0,82,165,0.2);">
+                    <i class="fas fa-layer-group mr-2" style="color: #ffd700;"></i>
+                    Elige una Categoría
+                </h2>
+                <p class="text-center mb-4 text-lg font-medium" style="color: #0052a5;">
+                    Selecciona una categoría para jugar preguntas específicas sobre la cultura ecuatoriana.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
+                    <!-- Patrimonio Cultural -->
+                    <div class="category-card" data-category="Patrimonio Cultural">
+                        <span class="category-badge">Patrimonio</span>
+                        <img src="https://www.culturaypatrimonio.gob.ec/wp-content/uploads/2020/04/CUENCA-1024x323.jpg"
+                            class="w-full h-40 object-cover" alt="Patrimonio Cultural">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-church"></i></div>
+                            <h3 class="font-bold text-lg">Patrimonio Cultural</h3>
+                            <p class="text-xs">Iglesias, centros históricos, tradiciones.</p>
+                        </div>
+                    </div>
+
+                    <!-- Sitios UNESCO -->
+                    <div class="category-card" data-category="Sitios UNESCO">
+                        <span class="category-badge">UNESCO</span>
+                        <img
+                            src="https://www.metroecuador.com.ec/resizer/v2/LGRQFZ3W2VAG5PRHZAEMQA6HZQ.png?auth=2e79095f774ca7d055044f544ff4e60457594d7876455f6aae3d4de9b95b4f3b&smart=true&quality=50&width=1023&height=574">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-globe-americas"></i></div>
+                            <h3 class="font-bold text-lg">Sitios UNESCO</h3>
+                            <p class="text-xs">Galápagos, Quito, Cuenca.</p>
+                        </div>
+                    </div>
+
+                    <!-- Gastronomía -->
+                    <div class="category-card" data-category="Gastronomía">
+                        <span class="category-badge">Comida</span>
+                        <img src="https://i.pinimg.com/736x/56/b9/b5/56b9b522c7e809d36eca80cd339d3d12--ecuador.jpg"
+                            class="w-full h-40 object-cover" alt="Gastronomía">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-utensils"></i></div>
+                            <h3 class="font-bold text-lg">Gastronomía</h3>
+                            <p class="text-xs">Platos típicos y bebidas tradicionales.</p>
+                        </div>
+                    </div>
+
+                    <!-- Geografía -->
+                    <div class="category-card" data-category="Geografía">
+                        <span class="category-badge">Geografía</span>
+                        <img src="https://radiovisionmanabi.com/wp-content/uploads/2020/04/Flag-map_of_Ecuador.svg-930x620.png"
+                            class="w-full h-40 object-cover" alt="Geografía">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-mountain"></i></div>
+                            <h3 class="font-bold text-lg">Geografía</h3>
+                            <p class="text-xs">Provincias, montañas, ríos y regiones.</p>
+                        </div>
+                    </div>
+
+                    <!-- Historia -->
+                    <div class="category-card" data-category="Historia">
+                        <span class="category-badge">Historia</span>
+                        <img src="https://www.ecuavisa.com/binrepository/1200x600/0c0/0d0/none/11705/YELF/que-es-la-batalla-de-pichincha-y-por_959593_20230524125614.jpg"
+                            class="w-full h-40 object-cover" alt="Historia">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-landmark"></i></div>
+                            <h3 class="font-bold text-lg">Historia</h3>
+                            <p class="text-xs">Personajes y fechas importantes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Música y Danza -->
+                    <div class="category-card" data-category="Música y Danza">
+                        <span class="category-badge">Música</span>
+                        <img src="https://hablemosdeculturas.com/wp-content/uploads/2017/12/danzas-del-ecuador-5-1024x682.jpg"
+                            class="w-full h-40 object-cover" alt="Música y Danza">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-music"></i></div>
+                            <h3 class="font-bold text-lg">Música y Danza</h3>
+                            <p class="text-xs">Ritmos tradicionales e instrumentos.</p>
+                        </div>
+                    </div>
+
+                    <!-- Pueblos y Nacionalidades -->
+                    <div class="category-card" data-category="Pueblos y Nacionalidades">
+                        <span class="category-badge">Pueblos</span>
+                        <img src="https://1.bp.blogspot.com/-eHYCGnqzJSQ/YAIec18yR1I/AAAAAAAAALc/3VFAeelQI_gD54lBZWvLxNC6RmpSIWq6gCLcBGAsYHQ/s639/Pueblos-y-Nacionalidades-Ind%25C3%25ADgenas-del-Ecuador.jpg"
+                            class="w-full h-40 object-cover" alt="Pueblos y Nacionalidades">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-people-group"></i></div>
+                            <h3 class="font-bold text-lg">Pueblos y Nacionalidades</h3>
+                            <p class="text-xs">Cultura indígena y diversidad.</p>
+                        </div>
+                    </div>
+
+                    <!-- Flora y Fauna -->
+                    <div class="category-card" data-category="Flora y Fauna">
+                        <span class="category-badge">Naturaleza</span>
+                        <img src="https://educarplus.com/wp-content/uploads/2021/01/Fauna-y-Flora-del-Ecuador.jpg"
+                            class="w-full h-40 object-cover" alt="Flora y Fauna">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-leaf"></i></div>
+                            <h3 class="font-bold text-lg">Flora y Fauna</h3>
+                            <p class="text-xs">Especies endémicas y biodiversidad.</p>
+                        </div>
+                    </div>
+
+                    <!-- Mezcla Aleatoria -->
+                    <div class="category-card" data-category="Todas">
+                        <span class="category-badge"
+                            style="background:linear-gradient(90deg,#ffd700,#0052a5,#d32f2f);color:#fff;">Mix</span>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Flag_of_Ecuador.svg/320px-Flag_of_Ecuador.svg.png"
+                            class="w-full h-40 object-cover" alt="Todas las categorías">
+                        <div class="category-overlay">
+                            <div class="category-icon"><i class="fas fa-random"></i></div>
+                            <h3 class="font-bold text-lg">Todas las categorías</h3>
+                            <p class="text-xs">Preguntas mezcladas de todo el país.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center items-center mt-2">
+                    <button id="back-to-intro-from-categories"
+                        class="btn-secondary px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                    <p class="text-sm font-semibold">
+                        <span id="selected-category-label" style="color: #ffffff;"></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="game-screen" class="hidden h-full">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold" style="color: #0052a5;">Pregunta <span
+                                id="current-question">1</span>/<span id="total-questions">10</span></h2>
+                        <p class="text-sm font-semibold">
+                            Categoría: <span id="game-category-label" style="color: #d32f2f;">Todas</span>
+                        </p>
+                    </div>
+                    <div class="text-xl px-4 py-2 rounded-lg flex items-center gap-2"
+                        style="background: linear-gradient(135deg, #ffd700, #ffed4e); border: 2px solid #0052a5;">
+                        <i class="fas fa-trophy" style="color: #d32f2f;"></i>
+                        Puntos: <span id="score" style="color: #0052a5; font-weight: bold;">0</span>
+                    </div>
+                </div>
+
+                <div class="w-full bg-white rounded-full h-2.5 mb-6" style="border: 2px solid #ffd700;">
+                    <div id="timer-bar" class="timer-bar" style="width: 100%"></div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="hangman-container mx-auto md:mx-0">
+                        <svg width="100%" height="100%" viewBox="0 0 200 250">
+                            <!-- Base -->
+                            <line x1="20" y1="230" x2="180" y2="230" class="hangman-part" />
+                            <!-- Pole -->
+                            <line x1="60" y1="230" x2="60" y2="30" class="hangman-part" />
+                            <!-- Top bar -->
+                            <line x1="60" y1="30" x2="140" y2="30" class="hangman-part" />
+                            <!-- Rope -->
+                            <line x1="140" y1="30" x2="140" y2="60" class="hangman-part" />
+
+                            <!-- Head -->
+                            <circle id="head" cx="140" cy="80" r="20" class="hangman-part hidden" />
+                            <!-- Body -->
+                            <line id="body" x1="140" y1="100" x2="140" y2="150" class="hangman-part hidden" />
+
+                            <!-- Left arm -->
+                            <line id="left-arm" x1="140" y1="110" x2="110" y2="130" class="hangman-part hidden" />
+                            <!-- Right arm -->
+                            <line id="right-arm" x1="140" y1="110" x2="170" y2="130" class="hangman-part hidden" />
+                            <!-- Left leg -->
+                            <line id="left-leg" x1="140" y1="150" x2="120" y2="190" class="hangman-part hidden" />
+                            <!-- Right leg -->
+                            <line id="right-leg" x1="140" y1="150" x2="160" y2="190" class="hangman-part hidden" />
+                        </svg>
+                        <div class="text-center mt-2 text-sm font-bold">
+                            <i class="fas fa-heart text-red-600"></i>
+                            Errores: <span id="errors-count">0</span>/6
+                        </div>
+                    </div>
+
+                    <div id="question-container" class="flex-1">
+                        <h3 id="question-text" class="text-xl md:text-2xl mb-4 font-bold">
+                            Pregunta de ejemplo
+                        </h3>
+
+                        <p id="feedback-message" class="h-6 mb-2 text-lg font-semibold"></p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <button class="option-btn py-3 px-4 rounded-lg text-left">Opción 1</button>
+                            <button class="option-btn py-3 px-4 rounded-lg text-left">Opción 2</button>
+                            <button class="option-btn py-3 px-4 rounded-lg text-left">Opción 3</button>
+                            <button class="option-btn py-3 px-4 rounded-lg text-left">Opción 4</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Screen -->
+            <div id="end-screen" class="hidden h-full py-6">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <h2 id="end-title" class="text-3xl md:text-4xl font-bold mb-4 text-center">¡Felicidades!</h2>
+
+                    <div id="final-hangman" class="hangman-container mb-4">
+                        <!-- Final hangman state will be cloned here -->
+                    </div>
+
+                    <div class="stats-card max-w-lg w-full">
+                        <h3 class="text-2xl font-bold text-center mb-4" style="color: #0052a5;">
+                            <i class="fas fa-chart-bar mr-2" style="color: #ffd700;"></i>Resumen de tu Partida
+                        </h3>
+
+                        <div class="stat-item">
+                            <span class="font-semibold"><i class="fas fa-list-ul mr-2"
+                                    style="color: #ffd700;"></i>Categoría Jugada:</span>
+                            <span class="text-lg font-bold" id="end-category-label" style="color: #0052a5;">Todas</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <span class="font-semibold"><i class="fas fa-trophy mr-2"
+                                    style="color: #ffd700;"></i>Puntuación Final:</span>
+                            <span class="text-2xl font-bold text-green-700" id="final-score">0</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <span class="font-semibold"><i
+                                    class="fas fa-check-circle text-green-600 mr-2"></i>Respuestas Correctas:</span>
+                            <span class="text-xl font-bold" id="correct-answers">0</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <span class="font-semibold"><i class="fas fa-times-circle text-red-600 mr-2"></i>Respuestas
+                                Incorrectas:</span>
+                            <span class="text-xl font-bold" id="incorrect-answers">0</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <span class="font-semibold"><i class="fas fa-percentage mr-2"
+                                    style="color: #0052a5;"></i>Porcentaje de Acierto:</span>
+                            <span class="text-xl font-bold" id="percentage">0%</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <span class="font-semibold"><i class="fas fa-medal mr-2"
+                                    style="color: #d32f2f;"></i>Calificación:</span>
+                            <span class="text-xl font-bold" id="rating">-</span>
+                        </div>
+                    </div>
+
+                    <p id="end-message" class="text-lg text-center my-4 p-4 rounded-lg max-w-lg font-semibold"
+                        style="background: rgba(255,255,255,0.95); border: 3px solid #ffd700;"></p>
+
+                    <div class="flex flex-wrap justify-center gap-4 mb-6">
+                        <button id="play-again-button"
+                            class="btn-primary px-6 py-3 text-lg rounded-lg inline-flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            Jugar de nuevo
+                        </button>
+                        <button id="back-to-categories-button"
+                            class="btn-secondary px-6 py-3 text-lg rounded-lg inline-flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group"></i>
+                            Otra categoría
+                        </button>
+                        <button id="back-to-intro-button"
+                            class="btn-secondary px-6 py-3 text-lg rounded-lg inline-flex items-center gap-2">
+                            <i class="fa-solid fa-home"></i>
+                            Inicio
+                        </button>
+                    </div>
+
+                    <div class="scoreboard w-full max-w-md p-4">
+                        <h3 class="text-xl font-bold mb-3 text-center" style="color: #0052a5;">
+                            <i class="fas fa-history mr-2" style="color: #ffd700;"></i>Historial de Partidas
+                        </h3>
+                        <ul id="previous-games" class="space-y-2">
+                            <li class="text-sm">No hay partidas registradas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-credits">
+        <i class="fas fa-users mr-2"></i>GRUPO 10 - 1C TERCER SEMESTRE
+    </div>
+
+    <script id="app-script">
+        // Banco de preguntas expandido (mínimo 20 por categoría)
+        const questionBank = {
+            "Patrimonio Cultural": [
+                { question: "¿Cuál es la iglesia barroca más famosa de Quito, conocida por su interior recubierto de pan de oro?", options: ["Basílica del Voto Nacional", "Iglesia de La Compañía de Jesús", "Catedral Primada de Quito", "Iglesia de San Francisco"], correctAnswer: 1 },
+                { question: "¿Qué ciudad ecuatoriana es reconocida por su centro histórico y sus tradicionales balcones de madera?", options: ["Guayaquil", "Cuenca", "Loja", "Ambato"], correctAnswer: 1 },
+                { question: "¿Cómo se llama la celebración religiosa que recorre el centro histórico de Quito con túnicas moradas?", options: ["Fiesta de la Mama Negra", "Inti Raymi", "Procesión de Jesús del Gran Poder", "Carnaval de Guaranda"], correctAnswer: 2 },
+                { question: "¿Qué monumento de Quito tiene gárgolas con forma de animales ecuatorianos?", options: ["Panecillo", "Basílica del Voto Nacional", "Palacio de Carondelet", "Catedral Metropolitana"], correctAnswer: 1 },
+                { question: "¿En qué ciudad se encuentra el Museo Pumapungo?", options: ["Quito", "Guayaquil", "Cuenca", "Loja"], correctAnswer: 2 },
+                { question: "¿Qué festividad se celebra en Latacunga con la Mama Negra?", options: ["Carnaval", "Independencia", "Virgen de las Mercedes", "Inti Raymi"], correctAnswer: 2 },
+                { question: "¿Cuál es el nombre del barrio colonial más antiguo de Quito?", options: ["La Mariscal", "La Ronda", "La Carolina", "La Floresta"], correctAnswer: 1 },
+                { question: "¿Qué iglesia de Quito es conocida por su fachada de piedra volcánica?", options: ["San Francisco", "Santo Domingo", "La Merced", "El Sagrario"], correctAnswer: 0 },
+                { question: "¿En qué provincia se celebra el Carnaval de Guaranda?", options: ["Chimborazo", "Bolívar", "Tungurahua", "Cotopaxi"], correctAnswer: 1 },
+                { question: "¿Qué tradición ecuatoriana consiste en quemar monigotes el 31 de diciembre?", options: ["Año Viejo", "Carnaval", "Corpus Christi", "Inti Raymi"], correctAnswer: 0 },
+                { question: "¿Cuál es el nombre del palacio presidencial de Ecuador?", options: ["Palacio de Gobierno", "Palacio de Carondelet", "Casa Rosada", "Palacio Nacional"], correctAnswer: 1 },
+                { question: "¿Qué ciudad es conocida como la 'Atenas del Ecuador'?", options: ["Cuenca", "Quito", "Loja", "Riobamba"], correctAnswer: 2 },
+                { question: "¿En qué mes se celebra el Inti Raymi en Ecuador?", options: ["Marzo", "Junio", "Septiembre", "Diciembre"], correctAnswer: 1 },
+                { question: "¿Qué material se usa tradicionalmente para hacer las guaguas de pan?", options: ["Harina de trigo", "Harina de maíz", "Harina de yuca", "Harina de quinua"], correctAnswer: 0 },
+                { question: "¿Cuál es el nombre de la plaza principal de Quito?", options: ["Plaza de la Independencia", "Plaza Grande", "Plaza San Francisco", "Plaza Santo Domingo"], correctAnswer: 1 },
+                { question: "¿Qué festividad religiosa se celebra en Semana Santa con procesiones?", options: ["Viernes Santo", "Domingo de Ramos", "Jueves Santo", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿En qué ciudad se encuentra el Museo del Banco Central más grande?", options: ["Guayaquil", "Cuenca", "Quito", "Manta"], correctAnswer: 2 },
+                { question: "¿Qué artista ecuatoriano es famoso por sus pinturas indigenistas?", options: ["Oswaldo Guayasamín", "Eduardo Kingman", "Camilo Egas", "Todos los anteriores"], correctAnswer: 3 },
+                { question: "¿Cuál es el nombre del mercado artesanal más famoso de Otavalo?", options: ["Plaza de Ponchos", "Mercado Central", "Feria Libre", "Plaza de los Artesanos"], correctAnswer: 0 },
+                { question: "¿Qué bebida tradicional se prepara con panela y aguardiente?", options: ["Chicha", "Canelazo", "Colada morada", "Horchata"], correctAnswer: 1 },
+                { question: "¿En qué ciudad se encuentra la Catedral de la Inmaculada Concepción con cúpulas azules?", options: ["Quito", "Guayaquil", "Cuenca", "Ibarra"], correctAnswer: 2 },
+                { question: "¿Qué festividad se celebra con danzas y rituales en honor al sol?", options: ["Inti Raymi", "Pawkar Raymi", "Kulla Raymi", "Kapak Raymi"], correctAnswer: 0 }
+            ],
+            "Sitios UNESCO": [
+                { question: "¿En qué año las Islas Galápagos fueron declaradas Patrimonio Natural de la Humanidad?", options: ["1978", "1992", "1985", "2001"], correctAnswer: 0 },
+                { question: "¿Cuál fue la primera ciudad declarada Patrimonio Cultural junto con Quito en 1978?", options: ["Cracovia", "Roma", "Cusco", "Atenas"], correctAnswer: 0 },
+                { question: "¿Qué ciudad ecuatoriana, famosa por sus iglesias y ríos, también es Patrimonio de la Humanidad?", options: ["Cuenca", "Loja", "Ibarra", "Manta"], correctAnswer: 0 },
+                { question: "¿Cuántas islas principales conforman el archipiélago de Galápagos?", options: ["10", "13", "18", "21"], correctAnswer: 1 },
+                { question: "¿Qué científico visitó las Galápagos en 1835 y desarrolló su teoría de la evolución?", options: ["Isaac Newton", "Charles Darwin", "Albert Einstein", "Galileo Galilei"], correctAnswer: 1 },
+                { question: "¿En qué año fue declarado Quito como Patrimonio Cultural de la Humanidad?", options: ["1975", "1978", "1980", "1985"], correctAnswer: 1 },
+                { question: "¿Cuál es el centro histórico más grande y mejor conservado de América Latina?", options: ["Cusco", "Quito", "Cartagena", "La Habana"], correctAnswer: 1 },
+                { question: "¿Qué parque nacional ecuatoriano es Patrimonio Natural de la Humanidad?", options: ["Yasuní", "Cotopaxi", "Galápagos", "Podocarpus"], correctAnswer: 2 },
+                { question: "¿En qué año Cuenca fue declarada Patrimonio Cultural de la Humanidad?", options: ["1995", "1999", "2001", "2005"], correctAnswer: 1 },
+                { question: "¿Qué isla de Galápagos es la más grande?", options: ["Santa Cruz", "San Cristóbal", "Isabela", "Floreana"], correctAnswer: 2 },
+                { question: "¿Cuál es el nombre del volcán activo más grande de Galápagos?", options: ["Sierra Negra", "Cerro Azul", "Wolf", "Darwin"], correctAnswer: 0 },
+                { question: "¿Qué río atraviesa el centro histórico de Cuenca?", options: ["Río Tomebamba", "Río Yanuncay", "Río Tarqui", "Río Machángara"], correctAnswer: 0 },
+                { question: "¿Cuántos sitios Patrimonio de la Humanidad tiene Ecuador?", options: ["3", "4", "5", "6"], correctAnswer: 2 },
+                { question: "¿Qué iglesia de Quito es considerada joya del barroco latinoamericano?", options: ["San Francisco", "La Compañía", "Santo Domingo", "La Catedral"], correctAnswer: 1 },
+                { question: "¿Qué animal es símbolo de las Islas Galápagos?", options: ["Iguana marina", "Tortuga gigante", "Piquero de patas azules", "Pingüino de Galápagos"], correctAnswer: 1 },
+                { question: "¿Cuál es la capital de la provincia de Galápagos?", options: ["Puerto Ayora", "Puerto Baquerizo Moreno", "Puerto Villamil", "Baltra"], correctAnswer: 1 },
+                { question: "¿Qué estilo arquitectónico predomina en el centro histórico de Quito?", options: ["Gótico", "Barroco", "Neoclásico", "Modernista"], correctAnswer: 1 },
+                { question: "¿Cuántas cúpulas tiene la Catedral de Cuenca?", options: ["2", "3", "4", "5"], correctAnswer: 1 },
+                { question: "¿Qué volcán se puede ver desde Quito en días despejados?", options: ["Chimborazo", "Cotopaxi", "Tungurahua", "Cayambe"], correctAnswer: 1 },
+                { question: "¿Qué parque nacional rodea el volcán Cotopaxi?", options: ["Parque Nacional Cotopaxi", "Parque Nacional Sangay", "Parque Nacional Cajas", "Parque Nacional Yasuní"], correctAnswer: 0 },
+                { question: "¿Cuál es el nombre del malecón turístico de Guayaquil?", options: ["Malecón 2000", "Malecón Simón Bolívar", "Malecón del Salado", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué significa 'Galápagos' en español antiguo?", options: ["Islas encantadas", "Tortugas", "Islas lejanas", "Paraíso"], correctAnswer: 1 }
+            ],
+            "Gastronomía": [
+                { question: "¿Cuál es el plato típico preparado con pescado, yuca y cebolla encurtida?", options: ["Ceviche de camarón", "Encebollado", "Fanesca", "Guatita"], correctAnswer: 1 },
+                { question: "¿Qué bebida tradicional se consume en la Sierra durante el Día de Difuntos?", options: ["Colada morada", "Canelazo", "Chicha de jora", "Horchata lojana"], correctAnswer: 0 },
+                { question: "¿Qué plato típico de la Sierra incluye cuy asado?", options: ["Hornado", "Seco de chivo", "Cuy asado", "Llapingachos"], correctAnswer: 2 },
+                { question: "¿Qué ingrediente principal tiene la fanesca?", options: ["Pescado", "Bacalao", "Pollo", "Carne de res"], correctAnswer: 1 },
+                { question: "¿Qué son los llapingachos?", options: ["Tortillas de maíz", "Tortillas de papa", "Empanadas", "Tamales"], correctAnswer: 1 },
+                { question: "¿Qué fruta tropical es originaria de Ecuador y se exporta mundialmente?", options: ["Mango", "Banano", "Piña", "Papaya"], correctAnswer: 1 },
+                { question: "¿Qué plato se prepara tradicionalmente en Semana Santa?", options: ["Hornado", "Fanesca", "Fritada", "Seco de chivo"], correctAnswer: 1 },
+                { question: "¿Qué bebida caliente se prepara con naranjilla?", options: ["Colada morada", "Canelazo", "Morocho", "Jugo de naranjilla"], correctAnswer: 3 },
+                { question: "¿Qué es el hornado?", options: ["Cerdo asado", "Pollo asado", "Res asada", "Cordero asado"], correctAnswer: 0 },
+                { question: "¿Qué postre se hace con higos y queso?", options: ["Dulce de higos", "Higos con queso", "Melcocha", "Quesadilla"], correctAnswer: 1 },
+                { question: "¿Qué bebida fermentada se hace con maíz?", options: ["Chicha", "Canelazo", "Colada morada", "Morocho"], correctAnswer: 0 },
+                { question: "¿Qué plato costeño se prepara con verde y queso?", options: ["Bolón de verde", "Corviche", "Empanada de verde", "Patacones"], correctAnswer: 0 },
+                { question: "¿Qué sopa es típica de la Costa ecuatoriana?", options: ["Locro", "Encebollado", "Caldo de gallina", "Yahuarlocro"], correctAnswer: 1 },
+                { question: "¿Qué dulce tradicional se hace estirando melaza?", options: ["Melcocha", "Alfajor", "Cocada", "Manjar"], correctAnswer: 0 },
+                { question: "¿Qué bebida se prepara con avena y especias?", options: ["Colada morada", "Morocho", "Avena", "Machica"], correctAnswer: 2 },
+                { question: "¿Qué plato se prepara con mariscos y salsa de maní?", options: ["Encocado", "Ceviche", "Corviche", "Cazuela"], correctAnswer: 0 },
+                { question: "¿Qué es el ceviche ecuatoriano?", options: ["Pescado cocido con limón", "Pescado crudo marinado", "Camarones cocidos", "Mariscos mixtos"], correctAnswer: 1 },
+                { question: "¿Qué pan dulce se come en Día de Difuntos?", options: ["Pan de yuca", "Guaguas de pan", "Pan de agua", "Pan integral"], correctAnswer: 1 },
+                { question: "¿Qué plato lleva sangre de borrego?", options: ["Guatita", "Yahuarlocro", "Menudo", "Caldo de pata"], correctAnswer: 1 },
+                { question: "¿Qué bebida se hace con panela y aguardiente?", options: ["Chicha", "Canelazo", "Pájaro azul", "Draquita"], correctAnswer: 1 },
+                { question: "¿Qué postre se hace con leche y azúcar caramelizada?", options: ["Flan", "Tres leches", "Manjar", "Arroz con leche"], correctAnswer: 2 },
+                { question: "¿Qué plato se sirve tradicionalmente en Navidad?", options: ["Pavo", "Hornado", "Pristiños", "Todas las anteriores"], correctAnswer: 3 }
+            ],
+            "Geografía": [
+                { question: "¿Cuántas regiones naturales tiene Ecuador?", options: ["2", "3", "4", "5"], correctAnswer: 2 },
+                { question: "¿Cuál es el volcán más alto de Ecuador?", options: ["Cotopaxi", "Tungurahua", "Chimborazo", "Cayambe"], correctAnswer: 2 },
+                { question: "¿Qué río es uno de los principales afluentes del Amazonas?", options: ["Río Daule", "Río Napo", "Río Guayas", "Río Paute"], correctAnswer: 1 },
+                { question: "¿Cuál es la provincia más grande de Ecuador?", options: ["Pastaza", "Orellana", "Morona Santiago", "Sucumbíos"], correctAnswer: 0 },
+                { question: "¿Qué ciudad es la capital de Ecuador?", options: ["Guayaquil", "Quito", "Cuenca", "Ambato"], correctAnswer: 1 },
+                { question: "¿Cuántas provincias tiene Ecuador?", options: ["22", "23", "24", "25"], correctAnswer: 2 },
+                { question: "¿Qué océano baña las costas ecuatorianas?", options: ["Atlántico", "Pacífico", "Índico", "Ártico"], correctAnswer: 1 },
+                { question: "¿Cuál es el volcán activo más alto del mundo?", options: ["Cotopaxi", "Chimborazo", "Sangay", "Reventador"], correctAnswer: 0 },
+                { question: "¿Qué cordillera atraviesa Ecuador?", options: ["Cordillera de los Andes", "Cordillera Blanca", "Cordillera Real", "Sierra Madre"], correctAnswer: 0 },
+                { question: "¿Cuál es la ciudad más poblada de Ecuador?", options: ["Quito", "Guayaquil", "Cuenca", "Machala"], correctAnswer: 1 },
+                { question: "¿Qué región de Ecuador es conocida como 'Oriente'?", options: ["Costa", "Sierra", "Amazonía", "Galápagos"], correctAnswer: 2 },
+                { question: "¿Cuál es el río más largo de Ecuador?", options: ["Río Napo", "Río Guayas", "Río Pastaza", "Río Santiago"], correctAnswer: 0 },
+                { question: "¿Qué provincia es conocida por sus playas?", options: ["Manabí", "Esmeraldas", "Santa Elena", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Cuál es la altura aproximada del Chimborazo?", options: ["5,897 m", "6,268 m", "6,310 m", "6,542 m"], correctAnswer: 1 },
+                { question: "¿Qué ciudad se conoce como 'Sultana de los Andes'?", options: ["Quito", "Riobamba", "Cuenca", "Loja"], correctAnswer: 1 },
+                { question: "¿Cuál es el lago más grande de Ecuador?", options: ["Lago San Pablo", "Laguna de Colta", "Lago Yahuarcocha", "Laguna Quilotoa"], correctAnswer: 0 },
+                { question: "¿Qué provincia limita con Colombia?", options: ["Esmeraldas", "Carchi", "Sucumbíos", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Cuál es el punto más occidental de Ecuador?", options: ["Galápagos", "Esmeraldas", "Manabí", "Santa Elena"], correctAnswer: 0 },
+                { question: "¿Qué volcán está cerca de Baños de Agua Santa?", options: ["Cotopaxi", "Tungurahua", "Chimborazo", "Altar"], correctAnswer: 1 },
+                { question: "¿Cuál es la provincia más pequeña de Ecuador?", options: ["Galápagos", "Santa Elena", "Bolívar", "Carchi"], correctAnswer: 0 },
+                { question: "¿Qué parque nacional protege el volcán Cotopaxi?", options: ["Parque Nacional Cotopaxi", "Parque Nacional Sangay", "Parque Nacional Cajas", "Parque Nacional Yasuní"], correctAnswer: 0 },
+                { question: "¿Por qué línea imaginaria pasa Ecuador?", options: ["Trópico de Cáncer", "Ecuador", "Trópico de Capricornio", "Meridiano de Greenwich"], correctAnswer: 1 }
+            ],
+            "Historia": [
+                { question: "¿Quién es conocido como el 'Viejo Luchador'?", options: ["Eloy Alfaro", "Gabriel García Moreno", "José María Velasco Ibarra", "Juan José Flores"], correctAnswer: 0 },
+                { question: "¿En qué año se proclamó la independencia de Guayaquil?", options: ["1809", "1820", "1830", "1812"], correctAnswer: 1 },
+                { question: "¿Qué batalla consolidó la independencia el 24 de mayo de 1822?", options: ["Batalla de Tarqui", "Batalla de Pichincha", "Batalla de Junín", "Batalla de Ayacucho"], correctAnswer: 1 },
+                { question: "¿Quién fue el primer presidente de Ecuador?", options: ["Juan José Flores", "Vicente Rocafuerte", "Gabriel García Moreno", "Eloy Alfaro"], correctAnswer: 0 },
+                { question: "¿En qué año se separó Ecuador de la Gran Colombia?", options: ["1822", "1830", "1835", "1840"], correctAnswer: 1 },
+                { question: "¿Quién lideró la Revolución Liberal de 1895?", options: ["Gabriel García Moreno", "Eloy Alfaro", "Vicente Rocafuerte", "José María Velasco Ibarra"], correctAnswer: 1 },
+                { question: "¿Qué presidente construyó el ferrocarril transandino?", options: ["Gabriel García Moreno", "Eloy Alfaro", "Vicente Rocafuerte", "Juan José Flores"], correctAnswer: 1 },
+                { question: "¿En qué año murió Eloy Alfaro?", options: ["1910", "1912", "1915", "1918"], correctAnswer: 1 },
+                { question: "¿Quién fue conocido como 'El Presidente de la República'?", options: ["Gabriel García Moreno", "Eloy Alfaro", "José María Velasco Ibarra", "Jaime Roldós"], correctAnswer: 2 },
+                { question: "¿Cuántas veces fue presidente Velasco Ibarra?", options: ["3", "4", "5", "6"], correctAnswer: 2 },
+                { question: "¿En qué año Ecuador perdió territorio en la guerra con Perú?", options: ["1941", "1942", "1943", "1944"], correctAnswer: 0 },
+                { question: "¿Quién fue el primer presidente elegido democráticamente tras la dictadura?", options: ["Jaime Roldós", "Osvaldo Hurtado", "León Febres Cordero", "Rodrigo Borja"], correctAnswer: 0 },
+                { question: "¿En qué año murió Jaime Roldós en accidente aéreo?", options: ["1979", "1980", "1981", "1982"], correctAnswer: 2 },
+                { question: "¿Qué moneda usaba Ecuador antes del dólar?", options: ["Peso", "Sucre", "Sol", "Bolívar"], correctAnswer: 1 },
+                { question: "¿En qué año Ecuador adoptó el dólar?", options: ["1998", "1999", "2000", "2001"], correctAnswer: 2 },
+                { question: "¿Quién fue el libertador que luchó en la Batalla de Pichincha?", options: ["Simón Bolívar", "Antonio José de Sucre", "José de San Martín", "Bernardo O'Higgins"], correctAnswer: 1 },
+                { question: "¿Qué presidente fue asesinado en 1875?", options: ["Gabriel García Moreno", "Juan José Flores", "Vicente Rocafuerte", "Antonio Flores"], correctAnswer: 0 },
+                { question: "¿En qué año se fundó Quito?", options: ["1534", "1535", "1536", "1537"], correctAnswer: 0 },
+                { question: "¿Quién fundó la ciudad de Guayaquil?", options: ["Francisco de Orellana", "Sebastián de Benalcázar", "Francisco Pizarro", "Diego de Almagro"], correctAnswer: 0 },
+                { question: "¿Qué cultura precolombina habitó la costa ecuatoriana?", options: ["Valdivia", "Manteña", "Chorrera", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Cuál fue la primera cultura de América?", options: ["Olmeca", "Valdivia", "Chavín", "Caral"], correctAnswer: 1 },
+                { question: "¿Qué imperio conquistó el territorio ecuatoriano antes de los españoles?", options: ["Azteca", "Maya", "Inca", "Chibcha"], correctAnswer: 2 }
+            ],
+            "Música y Danza": [
+                { question: "¿Cuál es el género musical considerado símbolo nacional?", options: ["San Juanito", "Pasillo", "Bomba", "Marimba"], correctAnswer: 1 },
+                { question: "¿Con qué provincia se asocia la Bomba?", options: ["Pichincha", "Esmeraldas", "Imbabura", "Manabí"], correctAnswer: 2 },
+                { question: "¿Qué instrumento de viento es típico de la música andina?", options: ["Charango", "Rondador", "Quena", "Zampoña"], correctAnswer: 1 },
+                { question: "¿Quién es el compositor del pasillo 'Sendas Distintas'?", options: ["Carlota Jaramillo", "Julio Jaramillo", "Segundo Cueva Celi", "Francisco Paredes Herrera"], correctAnswer: 1 },
+                { question: "¿Qué ritmo afroecuatoriano es típico de Esmeraldas?", options: ["Bomba", "Marimba", "Currulao", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué instrumento de cuerda es típico andino?", options: ["Guitarra", "Charango", "Bandolín", "Requinto"], correctAnswer: 1 },
+                { question: "¿Quién fue conocida como 'La Reina del Pasillo'?", options: ["Carlota Jaramillo", "Fresia Saavedra", "Beatriz Gil", "Anita Lucía Proaño"], correctAnswer: 0 },
+                { question: "¿Qué danza se baila en el Inti Raymi?", options: ["San Juanito", "Pasillo", "Bomba", "Yumbo"], correctAnswer: 0 },
+                { question: "¿Qué instrumento se hace con cañas de diferentes tamaños?", options: ["Quena", "Rondador", "Zampoña", "Pingullo"], correctAnswer: 1 },
+                { question: "¿Qué cantante es conocido como 'El Ruiseñor de América'?", options: ["Julio Jaramillo", "Olimpo Cárdenas", "Fruko y sus Tesos", "Daniel Santos"], correctAnswer: 0 },
+                { question: "¿Qué ritmo musical es típico de la provincia de Manabí?", options: ["Amorfino", "Pasillo", "San Juanito", "Bomba"], correctAnswer: 0 },
+                { question: "¿Qué instrumento de percusión es típico afroecuatoriano?", options: ["Bombo", "Cununo", "Guasá", "Todos los anteriores"], correctAnswer: 3 },
+                { question: "¿Qué danza tradicional representa la cosecha?", options: ["Yumbo", "Danzante", "San Juanito", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué compositor escribió 'Vasija de Barro'?", options: ["Gonzalo Benítez", "Hugo Alemán", "Segundo Cueva Celi", "Nicasio Safadi"], correctAnswer: 0 },
+                { question: "¿Qué ritmo se baila en parejas con pañuelos?", options: ["Pasillo", "San Juanito", "Albazo", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué instrumento es una pequeña guitarra de 10 cuerdas?", options: ["Bandolín", "Charango", "Requinto", "Tiple"], correctAnswer: 1 },
+                { question: "¿Qué canción es considerada el segundo himno del Ecuador?", options: ["Ambato Tierra de Flores", "Guayaquil de mis Amores", "Chulla Quiteño", "Vasija de Barro"], correctAnswer: 1 },
+                { question: "¿Qué danza representa a los guerreros incas?", options: ["Yumbo", "Danzante", "Capishca", "Todas las anteriores"], correctAnswer: 0 },
+                { question: "¿Qué instrumento de viento se toca en la marimba?", options: ["Guasá", "Cununo", "Bombo", "Ninguno"], correctAnswer: 3 },
+                { question: "¿Qué compositor es autor de 'Nuestro Juramento'?", options: ["Benito de Jesús", "Julio Jaramillo", "Olimpo Cárdenas", "Fresia Saavedra"], correctAnswer: 0 },
+                { question: "¿Qué ritmo musical es más rápido?", options: ["Pasillo", "San Juanito", "Albazo", "Yaraví"], correctAnswer: 2 },
+                { question: "¿Qué danza se realiza con máscaras y disfraces?", options: ["Diablada", "Yumbo", "Danzante", "Todas las anteriores"], correctAnswer: 3 }
+            ],
+            "Pueblos y Nacionalidades": [
+                { question: "¿Qué pueblo indígena es conocido por sus mercados artesanales?", options: ["Shuar", "Otavalos", "Tsáchilas", "Huaoranis"], correctAnswer: 1 },
+                { question: "¿Qué nacionalidad habita en la Amazonía y usa lanzas?", options: ["Kichwa", "Waorani", "Tsáchila", "Chachi"], correctAnswer: 1 },
+                { question: "¿Qué pueblo se pinta el cabello de rojo con achiote?", options: ["Shuar", "Tsáchila", "Cofan", "Saraguro"], correctAnswer: 1 },
+                { question: "¿Qué pueblo indígena viste de negro?", options: ["Otavalos", "Salasacas", "Saraguros", "Cañaris"], correctAnswer: 2 },
+                { question: "¿Cuántas nacionalidades indígenas tiene Ecuador?", options: ["11", "13", "14", "18"], correctAnswer: 2 },
+                { question: "¿Qué pueblo habita en la provincia de Esmeraldas?", options: ["Chachi", "Épera", "Awá", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué nacionalidad es conocida por la reducción de cabezas?", options: ["Shuar", "Achuar", "Waorani", "Cofán"], correctAnswer: 0 },
+                { question: "¿Qué pueblo indígena habita cerca del volcán Chimborazo?", options: ["Puruhá", "Cañari", "Panzaleo", "Salasaca"], correctAnswer: 0 },
+                { question: "¿Qué idioma hablan la mayoría de pueblos indígenas?", options: ["Kichwa", "Shuar", "Awapit", "Tsafiki"], correctAnswer: 0 },
+                { question: "¿Qué pueblo es conocido por sus tejidos y tapices?", options: ["Otavalos", "Salasacas", "Saraguros", "Todos los anteriores"], correctAnswer: 3 },
+                { question: "¿Qué nacionalidad habita en la frontera con Colombia?", options: ["Cofán", "Siona", "Secoya", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué pueblo indígena vive en la provincia de Cotopaxi?", options: ["Panzaleo", "Salasaca", "Chibuleo", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué significa 'Tsáchila'?", options: ["Gente verdadera", "Gente de la selva", "Gente del río", "Gente de la montaña"], correctAnswer: 0 },
+                { question: "¿Qué pueblo habita en la provincia del Azuay?", options: ["Cañari", "Saraguro", "Puruhá", "Palta"], correctAnswer: 0 },
+                { question: "¿Qué nacionalidad es conocida por su resistencia al contacto?", options: ["Waorani", "Tagaeri", "Taromenane", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué pueblo indígena celebra el Pawkar Raymi?", options: ["Otavalos", "Cayambis", "Todos los kichwas", "Saraguros"], correctAnswer: 2 },
+                { question: "¿Qué artesanía es típica de los Otavalos?", options: ["Tejidos", "Cerámica", "Joyería", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué pueblo habita en la provincia de Tungurahua?", options: ["Salasaca", "Chibuleo", "Kisapincha", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué nacionalidad habita en el Parque Yasuní?", options: ["Waorani", "Kichwa", "Shuar", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué pueblo es conocido por la medicina ancestral?", options: ["Tsáchila", "Shuar", "Kichwa", "Todos los anteriores"], correctAnswer: 3 },
+                { question: "¿Qué significa 'Waorani'?", options: ["Gente de la selva", "Gente verdadera", "Gente del jaguar", "Gente libre"], correctAnswer: 1 },
+                { question: "¿Qué pueblo indígena habita en la provincia de Imbabura?", options: ["Otavalos", "Natabuelas", "Caranquis", "Todas las anteriores"], correctAnswer: 3 }
+            ],
+            "Flora y Fauna": [
+                { question: "¿Qué reptil gigante es símbolo de Galápagos?", options: ["Iguana terrestre", "Tortuga gigante", "Boa esmeraldeña", "Caimán negro"], correctAnswer: 1 },
+                { question: "¿Qué ave marina es famosa por su gran pico y papada azul?", options: ["Piqueros de patas azules", "Albatros de Galápagos", "Pelícano pardo", "Cormorán no volador"], correctAnswer: 0 },
+                { question: "¿Qué flor nacional es una especie de orquídea blanca?", options: ["Flor de mayo", "Rosa de exportación", "Chuquiragua", "Flor de Guayacán"], correctAnswer: 0 },
+                { question: "¿Qué animal es el más grande de la Amazonía ecuatoriana?", options: ["Jaguar", "Tapir", "Anaconda", "Caimán negro"], correctAnswer: 1 },
+                { question: "¿Qué ave es el símbolo nacional de Ecuador?", options: ["Cóndor andino", "Águila harpía", "Tucán", "Colibrí"], correctAnswer: 0 },
+                { question: "¿Qué mono es endémico de Ecuador?", options: ["Mono aullador", "Mono araña", "Mono capuchino", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué oso habita en los Andes ecuatorianos?", options: ["Oso pardo", "Oso polar", "Oso de anteojos", "Oso negro"], correctAnswer: 2 },
+                { question: "¿Qué árbol es típico de la Costa ecuatoriana?", options: ["Guayacán", "Ceibo", "Balsa", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué felino es el más grande de Ecuador?", options: ["Puma", "Jaguar", "Ocelote", "Tigrillo"], correctAnswer: 1 },
+                { question: "¿Qué ave no puede volar y habita en Galápagos?", options: ["Pingüino", "Cormorán", "Albatros", "Pelícano"], correctAnswer: 1 },
+                { question: "¿Qué planta medicinal es típica de los Andes?", options: ["Valeriana", "Manzanilla", "Toronjil", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué serpiente es la más grande de Ecuador?", options: ["Boa constrictor", "Anaconda", "Coral", "Equis"], correctAnswer: 1 },
+                { question: "¿Qué pez de agua dulce es típico de la Amazonía?", options: ["Piranha", "Paiche", "Bagre", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué orquídea es endémica de Ecuador?", options: ["Cattleya", "Phalaenopsis", "Dracula", "Todas las anteriores"], correctAnswer: 2 },
+                { question: "¿Qué ave es conocida por su cola larga en Galápagos?", options: ["Fragata", "Albatros", "Piquero", "Gaviota"], correctAnswer: 0 },
+                { question: "¿Qué mamífero marino visita las costas ecuatorianas?", options: ["Ballena jorobada", "Delfín", "Lobo marino", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué árbol produce la tagua o marfil vegetal?", options: ["Palma de tagua", "Ceibo", "Guayacán", "Balsa"], correctAnswer: 0 },
+                { question: "¿Qué insecto es importante para la polinización?", options: ["Abeja", "Mariposa", "Colibrí", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué planta acuática crece en la Amazonía?", options: ["Victoria amazónica", "Loto", "Nenúfar", "Jacinto de agua"], correctAnswer: 0 },
+                { question: "¿Qué ave rapaz es la más grande de Ecuador?", options: ["Cóndor", "Águila harpía", "Halcón peregrino", "Gavilán"], correctAnswer: 1 },
+                { question: "¿Qué flor crece en los páramos andinos?", options: ["Chuquiragua", "Frailejón", "Achupalla", "Todas las anteriores"], correctAnswer: 3 },
+                { question: "¿Qué animal es conocido como 'lobo de río'?", options: ["Nutria gigante", "Caimán", "Anaconda", "Capibara"], correctAnswer: 0 }
+            ]
+        };
+
+        // Crear mezcla de todas las categorías sin repetir
+        function getAllQuestionsMixed() {
+            const all = [];
+            Object.keys(questionBank).forEach(cat => {
+                questionBank[cat].forEach(q => {
+                    all.push({ ...q, category: cat });
+                });
+            });
+            // mezcla y toma 10 únicas
+            const shuffled = all.sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, 10);
+        }
+
+        // Game state
+        const gameState = {
+            currentScreen: 'intro',
+            currentQuestion: 0,
+            score: 0,
+            wrongAnswers: 0,
+            maxWrongAnswers: 6,
+            timeLeft: 30,
+            timerInterval: null,
+            questions: [],
+            currentCategory: 'Todas'
+        };
+
+        // DOM elements
+        const introScreen = document.getElementById('intro-screen');
+        const categoryScreen = document.getElementById('category-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        const goToCategoriesButton = document.getElementById('go-to-categories-button');
+        const playAgainButton = document.getElementById('play-again-button');
+        const backToCategoriesButton = document.getElementById('back-to-categories-button');
+        const backToIntroButton = document.getElementById('back-to-intro-button');
+        const backToIntroFromCategories = document.getElementById('back-to-intro-from-categories');
+        const categoryCards = document.querySelectorAll('.category-card');
+        const selectedCategoryLabel = document.getElementById('selected-category-label');
+
+        const questionText = document.getElementById('question-text');
+        const optionButtons = document.querySelectorAll('.option-btn');
+        const scoreDisplay = document.getElementById('score');
+        const errorsCountDisplay = document.getElementById('errors-count');
+        const currentQuestionDisplay = document.getElementById('current-question');
+        const totalQuestionsDisplay = document.getElementById('total-questions');
+        const timerBar = document.getElementById('timer-bar');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const endTitle = document.getElementById('end-title');
+        const endMessage = document.getElementById('end-message');
+        const previousGames = document.getElementById('previous-games');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const questionContainer = document.getElementById('question-container');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const percentageDisplay = document.getElementById('percentage');
+        const ratingDisplay = document.getElementById('rating');
+        const gameCategoryLabel = document.getElementById('game-category-label');
+        const endCategoryLabel = document.getElementById('end-category-label');
+
+        // Hangman parts
+        const hangmanParts = [
+            document.getElementById('head'),
+            document.getElementById('sombrero-copa'),
+            document.getElementById('sombrero-ala'),
+            document.getElementById('body'),
+            document.getElementById('poncho'),
+            document.getElementById('left-arm'),
+            document.getElementById('right-arm'),
+            document.getElementById('left-leg'),
+            document.getElementById('right-leg')
+        ].filter(Boolean).slice(0, 6);
+
+        // Initialize game
+        function initGame() {
+            totalQuestionsDisplay.textContent = 10;
+            displayPreviousGames();
+        }
+
+        // Show screen
+        function showScreen(screenId) {
+            introScreen.classList.add('hidden');
+            categoryScreen.classList.add('hidden');
+            gameScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+
+            document.getElementById(screenId + '-screen').classList.remove('hidden');
+            gameState.currentScreen = screenId;
+        }
+
+        // Set feedback message
+        function setFeedback(text, type) {
+            if (type === 'ok') {
+                feedbackMessage.textContent = text;
+                feedbackMessage.className = 'h-6 mb-2 text-lg font-semibold text-green-700';
+            } else if (type === 'error') {
+                feedbackMessage.textContent = text;
+                feedbackMessage.className = 'h-6 mb-2 text-lg font-semibold text-red-700';
+            } else {
+                feedbackMessage.textContent = '';
+                feedbackMessage.className = 'h-6 mb-2';
+            }
+        }
+
+        // Configura preguntas según categoría SIN REPETIR
+        function setupQuestionsForCategory(category) {
+            gameState.currentCategory = category;
+            if (category === 'Todas') {
+                gameState.questions = getAllQuestionsMixed();
+            } else {
+                const base = [...questionBank[category]];
+                // mezclar y tomar 10 únicas
+                const shuffled = base.sort(() => Math.random() - 0.5).slice(0, 10);
+                gameState.questions = shuffled.map(q => ({ ...q, category }));
+            }
+            gameCategoryLabel.textContent = category;
+        }
+
+        // Start game
+        function startGame() {
+            clearInterval(gameState.timerInterval);
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.wrongAnswers = 0;
+            resetHangman();
+            setFeedback('', null);
+            errorsCountDisplay.textContent = 0;
+            showScreen('game');
+            loadQuestion();
+        }
+
+        // Load question
+        function loadQuestion() {
+            const question = gameState.questions[gameState.currentQuestion];
+            questionText.textContent = question.question;
+
+            optionButtons.forEach((button, index) => {
+                button.textContent = question.options[index];
+                button.classList.remove('correct', 'incorrect');
+                button.disabled = false;
+            });
+
+            currentQuestionDisplay.textContent = gameState.currentQuestion + 1;
+            scoreDisplay.textContent = gameState.score;
+            errorsCountDisplay.textContent = gameState.wrongAnswers;
+            setFeedback('', null);
+
+            startTimer();
+        }
+
+        // Start timer
+        function startTimer() {
+            clearInterval(gameState.timerInterval);
+            gameState.timeLeft = 30;
+            timerBar.style.width = '100%';
+            timerBar.style.background = 'linear-gradient(90deg, #4caf50, #8bc34a)';
+
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+                const percentage = (gameState.timeLeft / 30) * 100;
+                timerBar.style.width = `${percentage}%`;
+
+                if (percentage > 60) {
+                    timerBar.style.background = 'linear-gradient(90deg, #4caf50, #8bc34a)';
+                } else if (percentage > 30) {
+                    timerBar.style.background = 'linear-gradient(90deg, #ffd700, #ffed4e)';
+                } else {
+                    timerBar.style.background = 'linear-gradient(90deg, #d32f2f, #b71c1c)';
+                }
+
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    setFeedback('¡Se acabó el tiempo!', 'error');
+                    handleWrongAnswer();
+                }
+            }, 1000);
+        }
+
+        // Reset hangman
+        function resetHangman() {
+            hangmanParts.forEach(part => {
+                part.classList.add('hidden');
+            });
+        }
+
+        // Show hangman part
+        function showHangmanPart() {
+            if (gameState.wrongAnswers - 1 < hangmanParts.length) {
+                hangmanParts[gameState.wrongAnswers - 1].classList.remove('hidden');
+            }
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ffd700', '#0052a5', '#d32f2f', '#FFD700', '#FF6B6B', '#4ECDC4'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Handle answer selection
+        function handleAnswer(selectedIndex) {
+            clearInterval(gameState.timerInterval);
+            const question = gameState.questions[gameState.currentQuestion];
+
+            if (selectedIndex === question.correctAnswer) {
+                optionButtons[selectedIndex].classList.add('correct');
+                gameState.score += 10;
+                scoreDisplay.textContent = gameState.score;
+                setFeedback('¡Correcto! +10 puntos', 'ok');
+                questionContainer.classList.add('correct-question');
+
+                setTimeout(() => {
+                    questionContainer.classList.remove('correct-question');
+                    gameState.currentQuestion++;
+                    if (gameState.currentQuestion < gameState.questions.length) {
+                        loadQuestion();
+                    } else {
+                        endGame();
+                    }
+                }, 1000);
+            } else {
+                optionButtons[selectedIndex].classList.add('incorrect');
+                optionButtons[question.correctAnswer].classList.add('correct');
+                setFeedback('Respuesta incorrecta', 'error');
+                questionContainer.classList.add('wrong-question');
+                handleWrongAnswer();
+            }
+
+            optionButtons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        // Handle wrong answer
+        function handleWrongAnswer() {
+            gameState.wrongAnswers++;
+            errorsCountDisplay.textContent = gameState.wrongAnswers;
+            showHangmanPart();
+
+            setTimeout(() => {
+                questionContainer.classList.remove('wrong-question');
+                if (gameState.wrongAnswers >= gameState.maxWrongAnswers) {
+                    endGame();
+                } else {
+                    gameState.currentQuestion++;
+                    if (gameState.currentQuestion < gameState.questions.length) {
+                        loadQuestion();
+                    } else {
+                        endGame();
+                    }
+                }
+            }, 1000);
+        }
+
+        // End game
+        function endGame() {
+            showScreen('end');
+            finalScoreDisplay.textContent = gameState.score;
+            endCategoryLabel.textContent = gameState.currentCategory;
+
+            const finalHangman = document.getElementById('final-hangman');
+            const hangmanContainer = document.querySelector('.hangman-container');
+            finalHangman.innerHTML = hangmanContainer.innerHTML;
+
+            const correctAnswers = gameState.currentQuestion - gameState.wrongAnswers;
+            const porcentaje = Math.round((correctAnswers / 10) * 100);
+
+            correctAnswersDisplay.textContent = correctAnswers;
+            incorrectAnswersDisplay.textContent = gameState.wrongAnswers;
+            percentageDisplay.textContent = porcentaje + '%';
+
+            let rating = '';
+            let extraMsg = '';
+
+            if (porcentaje === 100) {
+                rating = 'Excelente 🏆';
+                extraMsg = '¡Eres un crack de la cultura ecuatoriana!';
+                createConfetti();
+            } else if (porcentaje >= 80) {
+                rating = 'Muy Bueno 🌟';
+                extraMsg = '¡Muy bien! Conoces bastante sobre Ecuador.';
+            } else if (porcentaje >= 60) {
+                rating = 'Bueno 👍';
+                extraMsg = 'Buen trabajo, pero aún puedes mejorar.';
+            } else if (porcentaje >= 40) {
+                rating = 'Regular 📚';
+                extraMsg = 'Necesitas repasar más sobre la cultura ecuatoriana.';
+            } else {
+                rating = 'Insuficiente 📖';
+                extraMsg = 'Toca estudiar más sobre Ecuador.';
+            }
+
+            ratingDisplay.textContent = rating;
+
+            if (gameState.wrongAnswers >= gameState.maxWrongAnswers) {
+                endTitle.textContent = '¡Juego terminado!';
+                endTitle.className = 'text-3xl md:text-4xl font-bold mb-4 text-center text-red-800';
+                endMessage.textContent = `Has sido ahorcado. ${extraMsg}`;
+            } else {
+                endTitle.textContent = '¡Felicidades!';
+                endTitle.className = 'text-3xl md:text-4xl font-bold mb-4 text-center text-green-800';
+                endMessage.textContent = extraMsg;
+            }
+
+            saveGame();
+            displayPreviousGames();
+        }
+
+        // Save game to local storage
+        function saveGame() {
+            const games = JSON.parse(localStorage.getItem('ecuadorCulturalGames') || '[]');
+            const newGame = {
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                score: gameState.score,
+                correctAnswers: gameState.currentQuestion - gameState.wrongAnswers,
+                totalQuestions: 10,
+                category: gameState.currentCategory
+            };
+
+            games.unshift(newGame);
+            if (games.length > 5) {
+                games.pop();
+            }
+
+            localStorage.setItem('ecuadorCulturalGames', JSON.stringify(games));
+        }
+
+        // Display previous games
+        function displayPreviousGames() {
+            const games = JSON.parse(localStorage.getItem('ecuadorCulturalGames') || '[]');
+            previousGames.innerHTML = '';
+
+            if (games.length === 0) {
+                previousGames.innerHTML = '<li class="text-sm text-center text-gray-600">No hay partidas registradas</li>';
+                return;
+            }
+
+            games.forEach((game, index) => {
+                const li = document.createElement('li');
+                li.className = 'text-sm p-2 rounded';
+                li.style.background = 'rgba(255,255,255,0.7)';
+                li.style.border = '2px solid #ffd700';
+                li.innerHTML = `
+          <strong>#${index + 1}</strong> ${game.date} - ${game.time}<br>
+          <span class="font-semibold">Cat:</span> ${game.category} |
+          <i class="fas fa-trophy" style="color:#ffd700;"></i> ${game.score} pts 
+          <i class="fas fa-check-circle text-green-600 ml-2"></i> ${game.correctAnswers}/${game.totalQuestions}
+        `;
+                previousGames.appendChild(li);
+            });
+        }
+
+        // Eventos de navegación
+        goToCategoriesButton.addEventListener('click', () => showScreen('category'));
+        backToIntroFromCategories.addEventListener('click', () => showScreen('intro'));
+        playAgainButton.addEventListener('click', startGame);
+        backToCategoriesButton.addEventListener('click', () => showScreen('category'));
+        backToIntroButton.addEventListener('click', () => showScreen('intro'));
+
+        // Selección de categoría
+        categoryCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const category = card.getAttribute('data-category');
+                selectedCategoryLabel.textContent = category;
+                setupQuestionsForCategory(category === 'Todas' ? 'Todas' : category);
+                setTimeout(() => {
+                    showScreen('game');
+                    startGame();
+                }, 300);
+            });
+        });
+
+        // Event listeners de respuestas
+        optionButtons.forEach((button, index) => {
+            button.addEventListener('click', () => handleAnswer(index));
+        });
+
+        // Initialize the game when document is loaded
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+
+</html>
